@@ -1,0 +1,84 @@
+Dataset:
+  name: 'RML2022'
+  image_size1: 2
+  image_size2: 128
+  num_classes: 11
+  channels: 2
+  batch_size: 128
+  logit_transform: false
+  uniform_dequantization: false
+  gaussian_dequantization: false
+  random_flip: true
+  rescaled: true
+  num_workers: 4
+  known: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+Model:
+  struc: 'DDPM_piped'
+  type: "simple"
+  image_size: 32
+#  num_classes: 11
+  in_channels: 2
+  out_ch: 2
+  ch: 64
+  ch_mult: [ 1, 2, 2, 2 ]
+  num_res_blocks: 2
+  attn_resolutions: [ 16, ]
+  dropout: 0.1
+  var_type: fixedlarge
+  resamp_with_conv: True
+
+Schedule:
+  type: 'linear'
+  beta_start: 0.0001
+  beta_end: 0.02
+  diffusion_step: 100
+
+Train:
+  epoch: 2000
+  batch_size: 128
+  accum_num: 1
+  cond_ratio: 0.9 # 控制有标签指导和无标签指导的比例
+  iter_type: 'diffusion'
+  iter_interval: 1000
+  t_type: 'symmetry'
+  loss_type: 'square'
+  ema_rate: 0.9999
+  ema: True
+
+Finetune:
+  epoch: 100
+  batch_size: 128
+  accum_num: 1
+  cond_ratio: 0.9 # 控制有标签指导和无标签指导的比例
+  iter_type: 'diffusion'
+  iter_interval: 1000
+  t_type: 'symmetry'
+  loss_type: 'square'
+  ema_rate: 0.9999
+  ema: True
+
+Optim:
+  weight_decay: 0.000
+#  optimizer: 'adam'
+  optimizer: 'adamw'
+  lr: 0.0002
+#  lr: 0.001
+  warmup: 2000
+#  lr_decay: 0.5
+  lr_decay: false
+  lr_step: 60000
+  lr_gamma: 0.7
+  beta1: 0.9
+  amsgrad: false
+  eps: 0.00000001
+  grad_clip: 1.0
+
+Sample:
+  batch_size: 512
+  last_only: True
+  total_num: 11
+  sig_num_classes: 2000
+  classes: 11
+
+
